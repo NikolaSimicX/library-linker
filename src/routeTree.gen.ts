@@ -10,33 +10,97 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as KnjigeRouteImport } from './routes/knjige'
+import { Route as AuthenticatedClanoviRouteImport } from './routes/_authenticated/clanovi'
+import { Route as AuthenticatedPozajmiceRouteImport } from './routes/_authenticated/pozajmice'
+import { Route as AuthenticatedClanoviClanIdRouteImport } from './routes/_authenticated/clanovi.$clanId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KnjigeRoute = KnjigeRouteImport.update({
+  id: '/knjige',
+  path: '/knjige',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedClanoviRoute = AuthenticatedClanoviRouteImport.update({
+  id: '/clanovi',
+  path: '/clanovi',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPozajmiceRoute = AuthenticatedPozajmiceRouteImport.update({
+  id: '/pozajmice',
+  path: '/pozajmice',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedClanoviClanIdRoute =
+  AuthenticatedClanoviClanIdRouteImport.update({
+    id: '/$clanId',
+    path: '/$clanId',
+    getParentRoute: () => AuthenticatedClanoviRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/knjige': typeof KnjigeRoute
+  '/clanovi': typeof AuthenticatedClanoviRouteWithChildren
+  '/pozajmice': typeof AuthenticatedPozajmiceRoute
+  '/clanovi/$clanId': typeof AuthenticatedClanoviClanIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/knjige': typeof KnjigeRoute
+  '/clanovi': typeof AuthenticatedClanoviRouteWithChildren
+  '/pozajmice': typeof AuthenticatedPozajmiceRoute
+  '/clanovi/$clanId': typeof AuthenticatedClanoviClanIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/knjige': typeof KnjigeRoute
+  '/_authenticated/clanovi': typeof AuthenticatedClanoviRouteWithChildren
+  '/_authenticated/pozajmice': typeof AuthenticatedPozajmiceRoute
+  '/_authenticated/clanovi/$clanId': typeof AuthenticatedClanoviClanIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    '/' | '/auth' | '/knjige' | '/clanovi' | '/pozajmice' | '/clanovi/$clanId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/auth' | '/knjige' | '/clanovi' | '/pozajmice' | '/clanovi/$clanId'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/knjige'
+    | '/_authenticated/clanovi'
+    | '/_authenticated/pozajmice'
+    | '/_authenticated/clanovi/$clanId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  KnjigeRoute: typeof KnjigeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +112,80 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/knjige': {
+      id: '/knjige'
+      path: '/knjige'
+      fullPath: '/knjige'
+      preLoaderRoute: typeof KnjigeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/clanovi': {
+      id: '/_authenticated/clanovi'
+      path: '/clanovi'
+      fullPath: '/clanovi'
+      preLoaderRoute: typeof AuthenticatedClanoviRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/pozajmice': {
+      id: '/_authenticated/pozajmice'
+      path: '/pozajmice'
+      fullPath: '/pozajmice'
+      preLoaderRoute: typeof AuthenticatedPozajmiceRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/clanovi/$clanId': {
+      id: '/_authenticated/clanovi/$clanId'
+      path: '/$clanId'
+      fullPath: '/clanovi/$clanId'
+      preLoaderRoute: typeof AuthenticatedClanoviClanIdRouteImport
+      parentRoute: typeof AuthenticatedClanoviRoute
+    }
   }
 }
 
+interface AuthenticatedClanoviRouteChildren {
+  AuthenticatedClanoviClanIdRoute: typeof AuthenticatedClanoviClanIdRoute
+}
+
+const AuthenticatedClanoviRouteChildren: AuthenticatedClanoviRouteChildren = {
+  AuthenticatedClanoviClanIdRoute: AuthenticatedClanoviClanIdRoute,
+}
+
+const AuthenticatedClanoviRouteWithChildren =
+  AuthenticatedClanoviRoute._addFileChildren(AuthenticatedClanoviRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedClanoviRoute: typeof AuthenticatedClanoviRouteWithChildren
+  AuthenticatedPozajmiceRoute: typeof AuthenticatedPozajmiceRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedClanoviRoute: AuthenticatedClanoviRouteWithChildren,
+  AuthenticatedPozajmiceRoute: AuthenticatedPozajmiceRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  KnjigeRoute: KnjigeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
