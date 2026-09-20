@@ -13,8 +13,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as KnjigeRouteImport } from './routes/knjige'
-import { Route as AuthenticatedClanoviRouteImport } from './routes/_authenticated/clanovi'
 import { Route as AuthenticatedPozajmiceRouteImport } from './routes/_authenticated/pozajmice'
+import { Route as AuthenticatedClanoviIndexRouteImport } from './routes/_authenticated/clanovi.index'
 import { Route as AuthenticatedClanoviClanIdRouteImport } from './routes/_authenticated/clanovi.$clanId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -36,38 +36,39 @@ const KnjigeRoute = KnjigeRouteImport.update({
   path: '/knjige',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedClanoviRoute = AuthenticatedClanoviRouteImport.update({
-  id: '/clanovi',
-  path: '/clanovi',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const AuthenticatedPozajmiceRoute = AuthenticatedPozajmiceRouteImport.update({
   id: '/pozajmice',
   path: '/pozajmice',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedClanoviIndexRoute =
+  AuthenticatedClanoviIndexRouteImport.update({
+    id: '/clanovi/',
+    path: '/clanovi/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedClanoviClanIdRoute =
   AuthenticatedClanoviClanIdRouteImport.update({
-    id: '/$clanId',
-    path: '/$clanId',
-    getParentRoute: () => AuthenticatedClanoviRoute,
+    id: '/clanovi/$clanId',
+    path: '/clanovi/$clanId',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/knjige': typeof KnjigeRoute
-  '/clanovi': typeof AuthenticatedClanoviRouteWithChildren
   '/pozajmice': typeof AuthenticatedPozajmiceRoute
   '/clanovi/$clanId': typeof AuthenticatedClanoviClanIdRoute
+  '/clanovi/': typeof AuthenticatedClanoviIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/knjige': typeof KnjigeRoute
-  '/clanovi': typeof AuthenticatedClanoviRouteWithChildren
   '/pozajmice': typeof AuthenticatedPozajmiceRoute
   '/clanovi/$clanId': typeof AuthenticatedClanoviClanIdRoute
+  '/clanovi': typeof AuthenticatedClanoviIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -75,25 +76,25 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/knjige': typeof KnjigeRoute
-  '/_authenticated/clanovi': typeof AuthenticatedClanoviRouteWithChildren
   '/_authenticated/pozajmice': typeof AuthenticatedPozajmiceRoute
   '/_authenticated/clanovi/$clanId': typeof AuthenticatedClanoviClanIdRoute
+  '/_authenticated/clanovi/': typeof AuthenticatedClanoviIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth' | '/knjige' | '/clanovi' | '/pozajmice' | '/clanovi/$clanId'
+    '/' | '/auth' | '/knjige' | '/pozajmice' | '/clanovi/$clanId' | '/clanovi/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/knjige' | '/clanovi' | '/pozajmice' | '/clanovi/$clanId'
+  to: '/' | '/auth' | '/knjige' | '/pozajmice' | '/clanovi/$clanId' | '/clanovi'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/knjige'
-    | '/_authenticated/clanovi'
     | '/_authenticated/pozajmice'
     | '/_authenticated/clanovi/$clanId'
+    | '/_authenticated/clanovi/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -133,13 +134,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KnjigeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/clanovi': {
-      id: '/_authenticated/clanovi'
-      path: '/clanovi'
-      fullPath: '/clanovi'
-      preLoaderRoute: typeof AuthenticatedClanoviRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/pozajmice': {
       id: '/_authenticated/pozajmice'
       path: '/pozajmice'
@@ -147,35 +141,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPozajmiceRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/clanovi/': {
+      id: '/_authenticated/clanovi/'
+      path: '/clanovi'
+      fullPath: '/clanovi/'
+      preLoaderRoute: typeof AuthenticatedClanoviIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/clanovi/$clanId': {
       id: '/_authenticated/clanovi/$clanId'
-      path: '/$clanId'
+      path: '/clanovi/$clanId'
       fullPath: '/clanovi/$clanId'
       preLoaderRoute: typeof AuthenticatedClanoviClanIdRouteImport
-      parentRoute: typeof AuthenticatedClanoviRoute
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
-interface AuthenticatedClanoviRouteChildren {
-  AuthenticatedClanoviClanIdRoute: typeof AuthenticatedClanoviClanIdRoute
-}
-
-const AuthenticatedClanoviRouteChildren: AuthenticatedClanoviRouteChildren = {
-  AuthenticatedClanoviClanIdRoute: AuthenticatedClanoviClanIdRoute,
-}
-
-const AuthenticatedClanoviRouteWithChildren =
-  AuthenticatedClanoviRoute._addFileChildren(AuthenticatedClanoviRouteChildren)
-
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedClanoviRoute: typeof AuthenticatedClanoviRouteWithChildren
   AuthenticatedPozajmiceRoute: typeof AuthenticatedPozajmiceRoute
+  AuthenticatedClanoviClanIdRoute: typeof AuthenticatedClanoviClanIdRoute
+  AuthenticatedClanoviIndexRoute: typeof AuthenticatedClanoviIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedClanoviRoute: AuthenticatedClanoviRouteWithChildren,
   AuthenticatedPozajmiceRoute: AuthenticatedPozajmiceRoute,
+  AuthenticatedClanoviClanIdRoute: AuthenticatedClanoviClanIdRoute,
+  AuthenticatedClanoviIndexRoute: AuthenticatedClanoviIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
