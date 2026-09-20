@@ -32,7 +32,7 @@ export const Route = createFileRoute("/_authenticated/pozajmice")({
       },
     ],
   }),
-  component: NovaPozajmica;
+  component: NovaPozajmica,
 });
 
 function danas() {
