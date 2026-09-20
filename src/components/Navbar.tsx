@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { BookOpen, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,9 @@ const linkClass =
 
 export function Navbar() {
   const { user, signOut } = useAuth();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -30,7 +34,7 @@ export function Navbar() {
           <Link to="/knjige" className={linkClass}>
             Katalog
           </Link>
-          {user ? (
+          {mounted && user ? (
             <>
               <Link to="/pozajmice" className={linkClass}>
                 Nova pozajmica
@@ -43,7 +47,7 @@ export function Navbar() {
         </div>
 
         <div className="ml-auto flex items-center gap-3">
-          {user ? (
+          {!mounted ? null : user ? (
             <>
               <span className="hidden text-xs text-muted-foreground md:inline">{user.email}</span>
               <Button variant="outline" size="sm" onClick={handleSignOut}>
