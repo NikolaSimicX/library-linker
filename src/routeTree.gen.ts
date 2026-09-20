@@ -10,33 +10,98 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as KnjigeRouteImport } from './routes/knjige'
+import { Route as AuthenticatedPozajmiceRouteImport } from './routes/_authenticated/pozajmice'
+import { Route as AuthenticatedClanoviIndexRouteImport } from './routes/_authenticated/clanovi.index'
+import { Route as AuthenticatedClanoviClanIdRouteImport } from './routes/_authenticated/clanovi.$clanId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KnjigeRoute = KnjigeRouteImport.update({
+  id: '/knjige',
+  path: '/knjige',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedPozajmiceRoute = AuthenticatedPozajmiceRouteImport.update({
+  id: '/pozajmice',
+  path: '/pozajmice',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedClanoviIndexRoute =
+  AuthenticatedClanoviIndexRouteImport.update({
+    id: '/clanovi/',
+    path: '/clanovi/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedClanoviClanIdRoute =
+  AuthenticatedClanoviClanIdRouteImport.update({
+    id: '/clanovi/$clanId',
+    path: '/clanovi/$clanId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/knjige': typeof KnjigeRoute
+  '/pozajmice': typeof AuthenticatedPozajmiceRoute
+  '/clanovi/$clanId': typeof AuthenticatedClanoviClanIdRoute
+  '/clanovi/': typeof AuthenticatedClanoviIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/knjige': typeof KnjigeRoute
+  '/pozajmice': typeof AuthenticatedPozajmiceRoute
+  '/clanovi/$clanId': typeof AuthenticatedClanoviClanIdRoute
+  '/clanovi': typeof AuthenticatedClanoviIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/knjige': typeof KnjigeRoute
+  '/_authenticated/pozajmice': typeof AuthenticatedPozajmiceRoute
+  '/_authenticated/clanovi/$clanId': typeof AuthenticatedClanoviClanIdRoute
+  '/_authenticated/clanovi/': typeof AuthenticatedClanoviIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    '/' | '/auth' | '/knjige' | '/pozajmice' | '/clanovi/$clanId' | '/clanovi/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/auth' | '/knjige' | '/pozajmice' | '/clanovi/$clanId' | '/clanovi'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/knjige'
+    | '/_authenticated/pozajmice'
+    | '/_authenticated/clanovi/$clanId'
+    | '/_authenticated/clanovi/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  KnjigeRoute: typeof KnjigeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +113,71 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/knjige': {
+      id: '/knjige'
+      path: '/knjige'
+      fullPath: '/knjige'
+      preLoaderRoute: typeof KnjigeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/pozajmice': {
+      id: '/_authenticated/pozajmice'
+      path: '/pozajmice'
+      fullPath: '/pozajmice'
+      preLoaderRoute: typeof AuthenticatedPozajmiceRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/clanovi/': {
+      id: '/_authenticated/clanovi/'
+      path: '/clanovi'
+      fullPath: '/clanovi/'
+      preLoaderRoute: typeof AuthenticatedClanoviIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/clanovi/$clanId': {
+      id: '/_authenticated/clanovi/$clanId'
+      path: '/clanovi/$clanId'
+      fullPath: '/clanovi/$clanId'
+      preLoaderRoute: typeof AuthenticatedClanoviClanIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedPozajmiceRoute: typeof AuthenticatedPozajmiceRoute
+  AuthenticatedClanoviClanIdRoute: typeof AuthenticatedClanoviClanIdRoute
+  AuthenticatedClanoviIndexRoute: typeof AuthenticatedClanoviIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedPozajmiceRoute: AuthenticatedPozajmiceRoute,
+  AuthenticatedClanoviClanIdRoute: AuthenticatedClanoviClanIdRoute,
+  AuthenticatedClanoviIndexRoute: AuthenticatedClanoviIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  KnjigeRoute: KnjigeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
