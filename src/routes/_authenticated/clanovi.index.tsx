@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-export const Route = createFileRoute("/_authenticated/clanovi")({
+export const Route = createFileRoute("/_authenticated/clanovi/")({
   head: () => ({
     meta: [
       { title: "Članovi biblioteke | BiblioTeka" },
