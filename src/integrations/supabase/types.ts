@@ -14,7 +14,117 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      clanovi: {
+        Row: {
+          clan_od: string
+          created_at: string
+          email: string
+          id: string
+          ime_i_prezime: string
+          telefon: string | null
+        }
+        Insert: {
+          clan_od?: string
+          created_at?: string
+          email: string
+          id: string
+          ime_i_prezime: string
+          telefon?: string | null
+        }
+        Update: {
+          clan_od?: string
+          created_at?: string
+          email?: string
+          id?: string
+          ime_i_prezime?: string
+          telefon?: string | null
+        }
+        Relationships: []
+      }
+      knjige: {
+        Row: {
+          autor: string
+          broj_primeraka: number
+          created_at: string
+          godina: number | null
+          id: string
+          naslov: string
+          zanr: string | null
+        }
+        Insert: {
+          autor: string
+          broj_primeraka?: number
+          created_at?: string
+          godina?: number | null
+          id?: string
+          naslov: string
+          zanr?: string | null
+        }
+        Update: {
+          autor?: string
+          broj_primeraka?: number
+          created_at?: string
+          godina?: number | null
+          id?: string
+          naslov?: string
+          zanr?: string | null
+        }
+        Relationships: []
+      }
+      pozajmice: {
+        Row: {
+          autor: string
+          clan_id: string
+          created_at: string
+          datum_pozajmice: string
+          id: string
+          knjiga_id: string | null
+          napomena: string | null
+          naslov: string
+          rok_vracanja: string
+          vracena: boolean
+        }
+        Insert: {
+          autor: string
+          clan_id: string
+          created_at?: string
+          datum_pozajmice?: string
+          id?: string
+          knjiga_id?: string | null
+          napomena?: string | null
+          naslov: string
+          rok_vracanja: string
+          vracena?: boolean
+        }
+        Update: {
+          autor?: string
+          clan_id?: string
+          created_at?: string
+          datum_pozajmice?: string
+          id?: string
+          knjiga_id?: string | null
+          napomena?: string | null
+          naslov?: string
+          rok_vracanja?: string
+          vracena?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pozajmice_clan_id_fkey"
+            columns: ["clan_id"]
+            isOneToOne: false
+            referencedRelation: "clanovi"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pozajmice_knjiga_id_fkey"
+            columns: ["knjiga_id"]
+            isOneToOne: false
+            referencedRelation: "knjige"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
